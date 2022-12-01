@@ -92,6 +92,7 @@ export default {
 <style>
 .disable {
 	user-select: none;
+	pointer-events: none;
 	opacity: 0.5;
 }
 .chooser {
@@ -106,7 +107,7 @@ export default {
 }
 
 #controls {
-	margin-top: 1.5rem;
+	margin-top: 1rem;
 	padding: 0.5rem;
 	display: flex;
 	justify-content: center;
@@ -116,11 +117,12 @@ export default {
 	flex-basis: 50%;
 }
 #search > input {
-	padding: 1rem;
+	padding: 0.7rem;
 	border-radius: 0;
 	position: relative;
 	border-right: none;
 	width: 70%;
+	border-color: black;
 }
 
 #search > input:focus {
@@ -135,7 +137,7 @@ export default {
 
 #search .fa-solid {
 	position: relative;
-	padding: 1rem;
+	padding: 0.7rem;
 	border: 2px solid black;
 	border-left: none;
 	border-radius: 0;
