@@ -4,7 +4,6 @@
 			v-model="chosenCategory"
 			@change="filterProducts(chosenCategory.categoryId)"
 		>
-			<option selected disabled>--- Izaberite kategoriju ----</option>
 			<option
 				class="options"
 				v-for="category in categories"
@@ -23,24 +22,33 @@
 	<div v-if="chosenCategory" class="main" :class="{ disable: hasProducts }">
 		<div id="controls">
 			<div id="search">
-				<input type="text" :disabled="chosenProducts.length < 1" />
+				<input type="text" placeholder="Unesite maksimalni iznos" />
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</div>
 			<div id="sort">
 				<h3>Sortiraj po dobavlajcima</h3>
-				Rastuce<input type="radio" name="sort" /> Opadajuce<input
-					type="radio"
-					name="sort"
-				/>
+				<select v-model="chosenSupplier">
+					<option v-for="sup in suppliers" :key="sup.supplierId">
+						{{ sup.companyName }}
+					</option>
+				</select>
 			</div>
 		</div>
 		<div id="products">
 			<h2>Proizvodi</h2>
-			<ul v-if="chosenProducts.length > 0">
-				<li v-for="product in chosenProducts" :key="product.productId">
+			<div class="products" v-if="chosenProducts.length > 0">
+				<div
+					class="product"
+					v-for="product in chosenProducts"
+					:key="product.productId"
+					@click="openProduct(product)"
+				>
 					{{ product.productName }}
-				</li>
-			</ul>
+					<span class="price">
+						Ukupna vrednost: {{ product.unitPrice * product.unitsInStock }}$
+					</span>
+				</div>
+			</div>
 			<span v-else>Trenutno nema proizvoda u ovoj kategoriji</span>
 		</div>
 	</div>
@@ -48,6 +56,7 @@
 
 <script>
 import axios from "axios";
+import "./home.css";
 export default {
 	name: "Home",
 	data() {
@@ -55,7 +64,9 @@ export default {
 			categories: [],
 			allProducts: [],
 			chosenProducts: [],
+			suppliers: [],
 			chosenCategory: "",
+			chosenSupplier: "",
 		};
 	},
 	mounted() {
@@ -67,6 +78,11 @@ export default {
 		axios.get("http://pabp.viser.edu.rs:8000/api/products").then((response) => {
 			this.allProducts = response.data;
 		});
+		axios
+			.get("http://pabp.viser.edu.rs:8000/api/suppliers")
+			.then((response) => {
+				this.suppliers = response.data;
+			});
 	},
 	methods: {
 		filterProducts(id) {
@@ -88,65 +104,3 @@ export default {
 	},
 };
 </script>
-
-<style>
-.disable {
-	user-select: none;
-	pointer-events: none;
-	opacity: 0.5;
-}
-.chooser {
-	display: flex;
-	justify-content: center;
-	gap: 5%;
-	margin-bottom: 2rem;
-}
-
-.chooser select {
-	flex-basis: 30%;
-}
-
-#controls {
-	margin-top: 1rem;
-	padding: 0.5rem;
-	display: flex;
-	justify-content: center;
-	gap: 5%;
-}
-#search {
-	flex-basis: 50%;
-}
-#search > input {
-	padding: 0.7rem;
-	border-radius: 0;
-	position: relative;
-	border-right: none;
-	width: 70%;
-	border-color: black;
-}
-
-#search > input:focus {
-	border-right: none;
-	outline: none;
-}
-
-#search:focus-within > input,
-#search:focus-within > .fa-solid {
-	border-color: blue;
-}
-
-#search .fa-solid {
-	position: relative;
-	padding: 0.7rem;
-	border: 2px solid black;
-	border-left: none;
-	border-radius: 0;
-	top: 1.5px;
-}
-#products {
-	flex-direction: column;
-	display: flex;
-	align-items: center;
-	margin: 1rem;
-}
-</style>

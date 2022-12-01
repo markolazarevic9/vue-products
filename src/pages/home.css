@@ -1,0 +1,89 @@
+.disable {
+	user-select: none;
+	pointer-events: none;
+	opacity: 0.5;
+}
+.chooser {
+	display: flex;
+	justify-content: center;
+	gap: 5%;
+	margin-bottom: 2rem;
+}
+
+.chooser select {
+	flex-basis: 30%;
+}
+
+#controls {
+	margin-top: 1rem;
+	padding: 0.5rem;
+	display: flex;
+	justify-content: center;
+	gap: 5%;
+}
+
+#sort {
+	flex-basis: 45%;
+}
+#search {
+	flex-basis: 50%;
+}
+#search > input {
+	padding: 0.7rem;
+	border-radius: 0;
+	position: relative;
+	border-right: none;
+	width: 70%;
+	border-color: black;
+}
+
+#search > input:focus {
+	border-right: none;
+	outline: none;
+}
+
+#search:focus-within > input,
+#search:focus-within > .fa-solid {
+	border-color: blue;
+}
+
+#search .fa-solid {
+	position: relative;
+	padding: 0.7rem;
+	border: 2px solid black;
+	border-left: none;
+	border-radius: 0;
+	top: 1.5px;
+}
+#products {
+	flex-direction: column;
+	display: flex;
+	align-items: center;
+	margin: 1rem;
+}
+
+.product {
+	padding: 0.8rem;
+	border: 1px solid white;
+	margin-top: 0.5rem;
+	background-color: white;
+	display: flex;
+	justify-content: space-between;
+}
+
+.product:hover {
+	cursor: pointer;
+	background-color: lightgray;
+	transition: 0.3s ease-in-out;
+	background-color: black;
+	color: white;
+}
+
+.products {
+	width: 60%;
+	padding: 1rem;
+	background-color: rgba(86, 86, 86, 1);
+}
+
+.price {
+}
