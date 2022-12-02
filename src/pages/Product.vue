@@ -5,15 +5,33 @@
 			<tbody>
 				<tr>
 					<td>Brojnost po jedinici:</td>
-					<td>{{ product.quantityPerUnit }}</td>
+					<td>
+						<input
+							:disabled="!edit"
+							type="text"
+							:value="product.quantityPerUnit"
+						/>
+					</td>
 				</tr>
 				<tr>
 					<td>Na lageru:</td>
-					<td>{{ product.unitsInStock }}</td>
+					<td>
+						<input
+							:disabled="!edit"
+							type="text"
+							:value="product.unitsInStock"
+						/>
+					</td>
 				</tr>
 				<tr>
 					<td>Cena po jedinici:</td>
-					<td>{{ product.unitPrice }}$</td>
+					<td>
+						<input
+							:disabled="!edit"
+							type="number"
+							:value="product.unitPrice"
+						/>$
+					</td>
 				</tr>
 				<tr>
 					<td>Naruceno:</td>
@@ -82,6 +100,11 @@ export default {
 	name: "Product",
 	props: {
 		product: Object,
+	},
+	data() {
+		return {
+			edit: false,
+		};
 	},
 	emits: ["closeProduct"],
 	methods: {
