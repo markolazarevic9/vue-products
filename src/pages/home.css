@@ -72,5 +72,6 @@
 	background-color: rgba(86, 86, 86, 1);
 }
 
-.price {
+.notification {
+	color: black;
 }

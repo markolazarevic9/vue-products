@@ -24,6 +24,11 @@
 					<td>{{ product.supplierName }}</td>
 				</tr>
 			</tbody>
+			<div class="actions">
+				<button class="button">Obrisi</button>
+				<button @click="edit = !edit" class="button">Izmeni</button>
+				<button @click="updateProduct()" class="button">Snimi izmene</button>
+			</div>
 			<h2>Porudzbine</h2>
 
 			<div class="orders" v-if="product.orders.length > 0">
@@ -92,6 +97,16 @@ export default {
 </script>
 
 <style>
+.actions {
+	display: flex;
+	gap: 5%;
+}
+.actions > button:first-child {
+	background-color: rgb(147, 12, 12);
+}
+.actions > button:nth-child(2) {
+	background-color: rgb(91, 91, 39);
+}
 .product-container {
 	position: fixed;
 	height: 100vh;
