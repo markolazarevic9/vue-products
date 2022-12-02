@@ -3,18 +3,18 @@
 	<div class="content-container">
 		<slot />
 	</div>
-	<Footer></Footer>
+	<!-- <Footer></Footer> -->
 </template>
 
 <script>
 import Header from "../Header/Header.vue";
-import Footer from "../Footer/Footer.vue";
+// import Footer from "../Footer/Footer.vue";
 
 export default {
 	name: "Layout",
 	components: {
 		Header,
-		Footer,
+		// Footer,
 	},
 };
 </script>

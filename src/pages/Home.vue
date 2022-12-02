@@ -19,42 +19,54 @@
 	</div>
 	<hr />
 
-	<div v-if="chosenCategory" class="main" :class="{ disable: hasProducts }">
+	<div v-if="chosenCategory" class="main">
 		<div id="controls">
 			<div id="search">
 				<input type="text" placeholder="Unesite maksimalni iznos" />
-				<i class="fa-solid fa-magnifying-glass"></i>
 			</div>
 			<div id="sort">
 				<h3>Sortiraj po dobavlajcima</h3>
-				<select v-model="chosenSupplier">
-					<option v-for="sup in suppliers" :key="sup.supplierId">
+				<select v-model="chosenSupplier" @change="sortPerSupplier()">
+					<option v-for="sup in suppliers" :key="sup.supplierId" :value="sup">
 						{{ sup.companyName }}
 					</option>
 				</select>
 			</div>
+			<div>
+				<button @click="cancelFilters()">Ponisti filtriranje</button>
+			</div>
 		</div>
 		<div id="products">
 			<h2>Proizvodi</h2>
-			<div class="products" v-if="chosenProducts.length > 0">
-				<div
-					class="product"
-					v-for="product in chosenProducts"
-					:key="product.productId"
-					@click="openProduct(product)"
-				>
-					{{ product.productName }}
-					<span class="price">
-						Ukupna vrednost: {{ product.unitPrice * product.unitsInStock }}$
-					</span>
-				</div>
-			</div>
+			<table class="products" v-if="chosenProducts.length > 0">
+				<thead>
+					<td>Naziv proizvoda</td>
+					<td>Ukupna vrednost</td>
+				</thead>
+				<tbody>
+					<tr
+						class="product"
+						v-for="product in chosenProducts"
+						:key="product.productId"
+						@click="openProduct(product)"
+					>
+						<td>{{ product.productName }}</td>
+						<td>{{ product.unitPrice * product.unitsInStock }}$</td>
+					</tr>
+				</tbody>
+			</table>
 			<span v-else>Trenutno nema proizvoda u ovoj kategoriji</span>
 		</div>
 	</div>
+	<Product
+		:product="sendProduct"
+		v-if="Boolean(this.popUpProduct)"
+		@closeProduct="onCloseWindow()"
+	></Product>
 </template>
 
 <script>
+import Product from "./Product.vue";
 import axios from "axios";
 import "./home.css";
 export default {
@@ -67,9 +79,25 @@ export default {
 			suppliers: [],
 			chosenCategory: "",
 			chosenSupplier: "",
+			product: false,
+			orders: [],
+			orderDetails: [],
+			popUpProduct: false,
 		};
 	},
+	components: {
+		Product,
+	},
 	mounted() {
+		axios.get("http://pabp.viser.edu.rs:8000/api/Orders").then((response) => {
+			this.orders = response.data;
+		});
+		axios
+			.get("http://pabp.viser.edu.rs:8000/api/OrderDetails")
+			.then((response) => {
+				this.orderDetails = response.data;
+			})
+			.catch((error) => console.log(error));
 		axios
 			.get("http://pabp.viser.edu.rs:8000/api/categories")
 			.then((response) => {
@@ -91,7 +119,45 @@ export default {
 					(p) => p.categoryId === id
 				);
 			}
-			console.log(this.chosenProducts);
+		},
+		findSupplier(id) {
+			let supplierName = "";
+			supplierName = this.suppliers.find(
+				(supplier) => supplier.supplierId == id
+			);
+			return supplierName.companyName;
+		},
+		openProduct(product) {
+			this.product = product;
+			this.product.supplierName = this.findSupplier(product.supplierId);
+			this.product.orderDetails = this.orderDetails.filter(
+				(o) => o.productId == product.productId
+			);
+			this.product.orders = [];
+			if (this.product.orderDetails.length > 0) {
+				this.product.orderDetails.map((orderDetail) => {
+					this.orders.map((o) => {
+						if (o.orderId == orderDetail.orderId) {
+							this.product.orders.push(o);
+						}
+					});
+				});
+			}
+			this.popUpProduct = true;
+		},
+		onCloseWindow() {
+			this.popUpProduct = false;
+		},
+		sortPerSupplier() {
+			this.filterProducts(this.chosenCategory.categoryId);
+			this.chosenProducts = this.chosenProducts.filter(
+				(p) => p.supplierId == this.chosenSupplier.supplierId
+			);
+			console.log(this.chosenSupplier.supplierId);
+		},
+		cancelFilters() {
+			this.chosenSupplier = "";
+			this.filterProducts(this.chosenCategory.categoryId);
 		},
 	},
 	computed: {
@@ -100,6 +166,9 @@ export default {
 				return false;
 			}
 			return true;
+		},
+		sendProduct() {
+			return this.product;
 		},
 	},
 };

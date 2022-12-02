@@ -1,15 +1,17 @@
 <template>
 	<Layout>
-		<RouterView></RouterView>
+		<Home> </Home>
 	</Layout>
 </template>
 
 <script>
 import Layout from "./components/Layout/Layout.vue";
+import Home from "./pages/Home.vue";
 export default {
 	name: "App",
 	components: {
 		Layout,
+		Home,
 	},
 };
 </script>

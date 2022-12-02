@@ -32,43 +32,30 @@
 	padding: 0.7rem;
 	border-radius: 0;
 	position: relative;
-	border-right: none;
 	width: 70%;
 	border-color: black;
-}
-
-#search > input:focus {
-	border-right: none;
-	outline: none;
-}
-
-#search:focus-within > input,
-#search:focus-within > .fa-solid {
-	border-color: blue;
-}
-
-#search .fa-solid {
-	position: relative;
-	padding: 0.7rem;
-	border: 2px solid black;
-	border-left: none;
-	border-radius: 0;
-	top: 1.5px;
 }
 #products {
 	flex-direction: column;
 	display: flex;
 	align-items: center;
 	margin: 1rem;
+	justify-content: flex-end;
+	color: white;
+}
+
+#products h2 {
+	color: black;
 }
 
 .product {
+	color: black;
 	padding: 0.8rem;
 	border: 1px solid white;
 	margin-top: 0.5rem;
 	background-color: white;
-	display: flex;
 	justify-content: space-between;
+	width: 100%;
 }
 
 .product:hover {
