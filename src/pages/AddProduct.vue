@@ -3,9 +3,25 @@
 		<div class="form">
 			<h2>Dodaj novi proizvod</h2>
 
-			<input type="text" placeholder="unesite naziv proizvoda" />
-			<input type="text" placeholder="unesite naziv proizvoda" />
-			<button class="button">Snimi novi proizvod</button>
+			<input
+				type="text"
+				placeholder="unesite naziv proizvoda"
+				v-model="newProduct.productName"
+			/>
+			<input
+				type="number"
+				placeholder="unesite cenu po jedinici proizvoda"
+				v-model="newProduct.unitPrice"
+			/>
+			<input
+				type="number"
+				placeholder="Brojnost na lageru"
+				v-model="newProduct.unitsInStock"
+			/>
+
+			<button @click="addNewProduct()" class="button">
+				Snimi novi proizvod
+			</button>
 		</div>
 	</div>
 
@@ -15,23 +31,48 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
+	inheritAttrs: false,
 	name: "AddProduct",
 	data() {
 		return {
-			newProduct: "",
+			newProduct: {},
 		};
 	},
 	props: {
-		product: Object,
+		category: Object,
 	},
 	emits: ["closeProduct"],
 	methods: {
 		closeWindow() {
 			this.$emit("closeProduct", null);
 		},
+		addNewProduct() {
+			const checkEntries =
+				this.newProduct.unitPrice != "" &&
+				this.newProduct.productName != "" &&
+				this.newProduct.unitsInStock != "" &&
+				this.category;
+			if (checkEntries) {
+				this.newProduct.unitPrice = String(this.newProduct.unitPrice);
+				this.newProduct.unitsInStock = String(this.newProduct.unitsInStock);
+				this.newProduct.categoryId = this.category.categoryId;
+				axios
+					.post("http://pabp.viser.edu.rs:8000/api/Products", this.newProduct)
+					.then(() => {
+						alert("uspesno je dodat novi proizvod");
+					});
+			} else {
+				alert("niste uneli podatke");
+			}
+		},
 	},
-	computed: {},
+	computed: {
+		hasCategory() {
+			return this.category;
+		},
+	},
 };
 </script>
 

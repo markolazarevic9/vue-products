@@ -13,7 +13,11 @@
 				{{ category.categoryName }}
 			</option>
 		</select>
-		<button :disabled="chosenCategory === ''" class="button">
+		<button
+			@click="toggleAddPage = !toggleAddPage"
+			:disabled="chosenCategory === ''"
+			class="button"
+		>
 			Dodaj novi proizvod
 		</button>
 	</div>
@@ -22,7 +26,11 @@
 	<div v-if="chosenCategory" class="main">
 		<div id="controls">
 			<div id="search">
-				<input type="text" placeholder="Unesite maksimalni iznos" />
+				<input
+					type="text"
+					placeholder="Unesite maksimalni iznos"
+					:disabled="hasProducts"
+				/>
 			</div>
 			<div id="sort">
 				<h3>Sortiraj po dobavlajcima</h3>
@@ -33,7 +41,13 @@
 				</select>
 			</div>
 			<div>
-				<button @click="cancelFilters()">Ponisti filtriranje</button>
+				<button
+					:disabled="!chosenSupplier"
+					class="button"
+					@click="cancelFilters()"
+				>
+					Ponisti filtriranje
+				</button>
 			</div>
 		</div>
 		<div id="products">
@@ -55,7 +69,9 @@
 					</tr>
 				</tbody>
 			</table>
-			<span v-else>Trenutno nema proizvoda u ovoj kategoriji</span>
+			<span class="notification" v-else
+				>Trenutno nema proizvoda u ovoj kategoriji</span
+			>
 		</div>
 	</div>
 	<Product
@@ -63,10 +79,17 @@
 		v-if="Boolean(this.popUpProduct)"
 		@closeProduct="onCloseWindow()"
 	></Product>
+	<AddProduct
+		v-if="toggleAddPage"
+		@closeProduct="onCloseWindow()"
+		:category="this.chosenCategory"
+	>
+	</AddProduct>
 </template>
 
 <script>
 import Product from "./Product.vue";
+import AddProduct from "./AddProduct.vue";
 import axios from "axios";
 import "./home.css";
 export default {
@@ -83,10 +106,12 @@ export default {
 			orders: [],
 			orderDetails: [],
 			popUpProduct: false,
+			toggleAddPage: false,
 		};
 	},
 	components: {
 		Product,
+		AddProduct,
 	},
 	mounted() {
 		axios.get("http://pabp.viser.edu.rs:8000/api/Orders").then((response) => {
@@ -121,11 +146,14 @@ export default {
 			}
 		},
 		findSupplier(id) {
-			let supplierName = "";
-			supplierName = this.suppliers.find(
-				(supplier) => supplier.supplierId == id
-			);
-			return supplierName.companyName;
+			if (typeof id != undefined && id != null) {
+				let supplierName = "";
+				supplierName = this.suppliers.find(
+					(supplier) => supplier.supplierId == id
+				);
+				return supplierName.companyName;
+			}
+			return "";
 		},
 		openProduct(product) {
 			this.product = product;
@@ -147,6 +175,7 @@ export default {
 		},
 		onCloseWindow() {
 			this.popUpProduct = false;
+			this.toggleAddPage = false;
 		},
 		sortPerSupplier() {
 			this.filterProducts(this.chosenCategory.categoryId);
