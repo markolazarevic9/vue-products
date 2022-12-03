@@ -43,7 +43,7 @@ export default {
 	props: {
 		category: Object,
 	},
-	emits: ["closeProduct"],
+	emits: ["closeProduct", "refreshPage"],
 	methods: {
 		closeWindow() {
 			this.$emit("closeProduct", null);
@@ -60,8 +60,10 @@ export default {
 				this.newProduct.categoryId = this.category.categoryId;
 				axios
 					.post("http://pabp.viser.edu.rs:8000/api/Products", this.newProduct)
-					.then(() => {
+					.then((response) => {
 						alert("uspesno je dodat novi proizvod");
+						this.$emit("refreshPage", response.data);
+						this.closeWindow();
 					});
 			} else {
 				alert("niste uneli podatke");

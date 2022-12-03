@@ -45,7 +45,9 @@
 			<div class="actions">
 				<button @click="deleteProduct()" class="button">Obrisi</button>
 				<button @click="edit = !edit" class="button">Izmeni</button>
-				<button @click="updateProduct()" class="button">Snimi izmene</button>
+				<button @click="updateProduct()" class="button" :disabled="!edit">
+					Snimi izmene
+				</button>
 			</div>
 			<h2>Porudzbine</h2>
 
@@ -111,7 +113,7 @@ export default {
 			supplierName: "",
 		};
 	},
-	emits: ["closeProduct"],
+	emits: ["closeProduct", "refreshPage"],
 	methods: {
 		closeWindow() {
 			this.$emit("closeProduct", null);
@@ -135,7 +137,7 @@ export default {
 						`http://pabp.viser.edu.rs:8000/api/Products/${this.productCopy.productId}`
 					)
 					.then(() => {
-						delete this.productCopy;
+						this.$emit("refreshPage", this.productCopy);
 						this.closeWindow();
 					})
 					.catch((error) => console.debug(error));

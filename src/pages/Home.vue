@@ -78,10 +78,12 @@
 		:product="sendProduct"
 		v-if="Boolean(this.popUpProduct)"
 		@closeProduct="onCloseWindow()"
+		@refreshPage="removeProduct($event)"
 	></Product>
 	<AddProduct
 		v-if="toggleAddPage"
 		@closeProduct="onCloseWindow()"
+		@refreshPage="addNewProduct($event)"
 		:category="this.chosenCategory"
 	>
 	</AddProduct>
@@ -187,6 +189,17 @@ export default {
 		cancelFilters() {
 			this.chosenSupplier = "";
 			this.filterProducts(this.chosenCategory.categoryId);
+		},
+		removeProduct(prod) {
+			const index = this.allProducts.indexOf(prod);
+			this.allProducts.splice(index, index);
+			this.filterProducts(this.chosenCategory.categoryId);
+		},
+		addNewProduct(prod) {
+			if (prod) {
+				this.allProducts.push(prod);
+				this.filterProducts(this.chosenCategory.categoryId);
+			}
 		},
 	},
 	computed: {
