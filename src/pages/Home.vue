@@ -27,9 +27,11 @@
 		<div id="controls">
 			<div id="search">
 				<input
-					type="text"
+					type="number"
 					placeholder="Unesite maksimalni iznos"
 					:disabled="hasProducts"
+					v-model="searchPrice"
+					@change="filterPerPrice()"
 				/>
 			</div>
 			<div id="sort">
@@ -42,7 +44,7 @@
 			</div>
 			<div>
 				<button
-					:disabled="!chosenSupplier"
+					:disabled="!this.chosenSupplier && !this.searchPrice"
 					class="button"
 					@click="cancelFilters()"
 				>
@@ -109,6 +111,7 @@ export default {
 			orderDetails: [],
 			popUpProduct: false,
 			toggleAddPage: false,
+			searchPrice: "",
 		};
 	},
 	components: {
@@ -188,6 +191,7 @@ export default {
 		},
 		cancelFilters() {
 			this.chosenSupplier = "";
+			this.searchPrice = "";
 			this.filterProducts(this.chosenCategory.categoryId);
 		},
 		removeProduct(prod) {
@@ -199,6 +203,15 @@ export default {
 			if (prod) {
 				this.allProducts.push(prod);
 				this.filterProducts(this.chosenCategory.categoryId);
+			}
+		},
+		filterPerPrice() {
+			this.filterProducts(this.chosenCategory.categoryId);
+			if (this.searchPrice != "") {
+				console.log(this.searchPrice);
+				this.chosenProducts = this.chosenProducts.filter(
+					(p) => p.unitPrice <= this.searchPrice
+				);
 			}
 		},
 	},
