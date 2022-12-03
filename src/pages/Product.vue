@@ -9,7 +9,7 @@
 						<input
 							:disabled="!edit"
 							type="text"
-							:value="product.quantityPerUnit"
+							v-model="this.productCopy.quantityPerUnit"
 						/>
 					</td>
 				</tr>
@@ -19,7 +19,7 @@
 						<input
 							:disabled="!edit"
 							type="text"
-							:value="product.unitsInStock"
+							v-model="this.productCopy.unitsInStock"
 						/>
 					</td>
 				</tr>
@@ -29,7 +29,7 @@
 						<input
 							:disabled="!edit"
 							type="number"
-							:value="product.unitPrice"
+							v-model="this.productCopy.unitPrice"
 						/>$
 					</td>
 				</tr>
@@ -49,7 +49,7 @@
 			</div>
 			<h2>Porudzbine</h2>
 
-			<div class="orders" v-if="product.orders.length > 0">
+			<div class="orders" v-if="orders.length > 0">
 				<table>
 					<thead>
 						<td>Sifra kupca</td>
@@ -61,7 +61,7 @@
 						<td>Popust</td>
 					</thead>
 					<tbody>
-						<tr v-for="order in product.orders" :key="order.orderId">
+						<tr v-for="order in orders" :key="order.orderId">
 							<td>
 								{{ order.customerId }}
 							</td>
@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
 	name: "Product",
 	props: {
@@ -104,6 +105,10 @@ export default {
 	data() {
 		return {
 			edit: false,
+			productCopy: "",
+			orders: "",
+			orderDetails: "",
+			supplierName: "",
 		};
 	},
 	emits: ["closeProduct"],
@@ -112,10 +117,28 @@ export default {
 			this.$emit("closeProduct", null);
 		},
 		getOrderDetail(id) {
-			return this.product.orderDetails.filter((p) => p.orderId == id);
+			return this.orderDetails.filter((p) => p.orderId == id);
+		},
+		updateProduct() {
+			axios
+				.put(
+					`http://pabp.viser.edu.rs:8000/api/Products/${this.productCopy.productId}`,
+					this.productCopy
+				)
+				.then(() => {})
+				.catch((error) => console.debug(error));
 		},
 	},
 	computed: {},
+	mounted() {
+		this.orderDetails = this.product.orderDetails;
+		this.orders = this.product.orders;
+		this.supplierName = this.product.supplierName;
+		delete this.product.orderDetails;
+		delete this.product.orders;
+		delete this.product.supplierName;
+		this.productCopy = this.product;
+	},
 };
 </script>
 
