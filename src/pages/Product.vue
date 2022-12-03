@@ -39,11 +39,11 @@
 				</tr>
 				<tr>
 					<td>Dobavljac:</td>
-					<td>{{ product.supplierName }}</td>
+					<td>{{ this.supplierName }}</td>
 				</tr>
 			</tbody>
 			<div class="actions">
-				<button class="button">Obrisi</button>
+				<button @click="deleteProduct()" class="button">Obrisi</button>
 				<button @click="edit = !edit" class="button">Izmeni</button>
 				<button @click="updateProduct()" class="button">Snimi izmene</button>
 			</div>
@@ -127,6 +127,19 @@ export default {
 				)
 				.then(() => {})
 				.catch((error) => console.debug(error));
+		},
+		deleteProduct() {
+			if (confirm("da li zelite da obrisete ovaj proizvod")) {
+				axios
+					.delete(
+						`http://pabp.viser.edu.rs:8000/api/Products/${this.productCopy.productId}`
+					)
+					.then(() => {
+						delete this.productCopy;
+						this.closeWindow();
+					})
+					.catch((error) => console.debug(error));
+			}
 		},
 	},
 	computed: {},
