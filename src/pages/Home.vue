@@ -29,7 +29,6 @@
 				<input
 					type="number"
 					placeholder="Unesite maksimalni iznos"
-					:disabled="hasProducts"
 					v-model="searchPrice"
 					@change="filterPerPrice()"
 				/>
@@ -119,28 +118,36 @@ export default {
 		AddProduct,
 	},
 	mounted() {
-		axios.get("http://pabp.viser.edu.rs:8000/api/Orders").then((response) => {
-			this.orders = response.data;
-		});
+		axios
+			.get("http://pabp.viser.edu.rs:8000/api/Orders")
+			.then((response) => {
+				this.orders = response.data;
+			})
+			.catch((error) => console.debug(error));
 		axios
 			.get("http://pabp.viser.edu.rs:8000/api/OrderDetails")
 			.then((response) => {
 				this.orderDetails = response.data;
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => console.debug(error));
 		axios
 			.get("http://pabp.viser.edu.rs:8000/api/categories")
 			.then((response) => {
 				this.categories = response.data;
-			});
-		axios.get("http://pabp.viser.edu.rs:8000/api/products").then((response) => {
-			this.allProducts = response.data;
-		});
+			})
+			.catch((error) => console.debug(error));
+		axios
+			.get("http://pabp.viser.edu.rs:8000/api/products")
+			.then((response) => {
+				this.allProducts = response.data;
+			})
+			.catch((error) => console.debug(error));
 		axios
 			.get("http://pabp.viser.edu.rs:8000/api/suppliers")
 			.then((response) => {
 				this.suppliers = response.data;
-			});
+			})
+			.catch((error) => console.debug(error));
 	},
 	methods: {
 		filterProducts(id) {
@@ -187,7 +194,6 @@ export default {
 			this.chosenProducts = this.chosenProducts.filter(
 				(p) => p.supplierId == this.chosenSupplier.supplierId
 			);
-			console.log(this.chosenSupplier.supplierId);
 		},
 		cancelFilters() {
 			this.chosenSupplier = "";
@@ -208,7 +214,6 @@ export default {
 		filterPerPrice() {
 			this.filterProducts(this.chosenCategory.categoryId);
 			if (this.searchPrice != "") {
-				console.log(this.searchPrice);
 				this.chosenProducts = this.chosenProducts.filter(
 					(p) => p.unitPrice <= this.searchPrice
 				);

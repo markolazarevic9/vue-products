@@ -127,7 +127,10 @@ export default {
 					`http://pabp.viser.edu.rs:8000/api/Products/${this.productCopy.productId}`,
 					this.productCopy
 				)
-				.then(() => {})
+				.then(() => {
+					alert("Proizod izmenjen");
+					this.edit = !this.edit;
+				})
 				.catch((error) => console.debug(error));
 		},
 		deleteProduct() {
