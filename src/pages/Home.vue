@@ -94,7 +94,7 @@
 import Product from "./Product.vue";
 import AddProduct from "./AddProduct.vue";
 import axios from "axios";
-import "./home.css";
+import "../styles/home.css";
 export default {
 	name: "Home",
 	data() {
